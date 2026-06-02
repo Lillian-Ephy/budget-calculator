@@ -1,0 +1,643 @@
+:root {
+  --bg: #f3eee3;
+  --panel: rgba(255, 251, 243, 0.94);
+  --panel-strong: rgba(255, 255, 255, 0.56);
+  --line: #d8d0bf;
+  --ink: #18332f;
+  --muted: #5f746f;
+  --accent: #0f766e;
+  --accent-dark: #115e59;
+  --soft-accent: #e6f1ec;
+  --soft-blue: #e9f0fb;
+  --soft-rose: #f7ede5;
+  --panel-outline: rgba(216, 208, 191, 0.7);
+  --row-outline: rgba(216, 208, 191, 0.82);
+  --shadow: 0 18px 42px rgba(24, 51, 47, 0.07);
+  --panel-radius: 30px;
+  --row-radius: 18px;
+  --input-radius: 14px;
+  --budget-columns: minmax(165px, 1.3fr) minmax(116px, 0.82fr) minmax(148px, 0.92fr) minmax(92px, 0.68fr) minmax(92px, 0.68fr) 42px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(17, 94, 89, 0.07), transparent 24%),
+    linear-gradient(180deg, #faf6ee 0%, var(--bg) 100%);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.page {
+  width: min(1320px, calc(100vw - 48px));
+  margin: 28px auto 34px;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.84fr) minmax(480px, 1.16fr);
+  grid-template-areas:
+    "inputs annual"
+    "budget budget"
+    "expenses expenses";
+  gap: 18px;
+  align-items: start;
+  background: var(--panel);
+  border: 1px solid var(--panel-outline);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  position: relative;
+  padding: 20px 0 0;
+}
+
+.panel {
+  padding: 10px 28px 26px;
+  min-width: 0;
+  background: transparent;
+  position: relative;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 96px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), transparent);
+  pointer-events: none;
+}
+
+.inputs-panel {
+  grid-area: inputs;
+  min-height: 346px;
+}
+
+.budget-panel {
+  grid-area: budget;
+  min-height: 492px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(216, 208, 191, 0.8);
+}
+
+.benefits-panel {
+  grid-area: annual;
+  min-height: 276px;
+  padding-top: 10px;
+  border-top: none;
+}
+
+.totals-panel {
+  grid-area: expenses;
+  min-height: 138px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(216, 208, 191, 0.8);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 700;
+}
+
+h1,
+h2 {
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+.monthly-grid {
+  margin-top: 12px;
+}
+
+.monthly-header,
+.monthly-row {
+  display: grid;
+  grid-template-columns: minmax(138px, 1.35fr) minmax(108px, 0.95fr) minmax(108px, 0.95fr) minmax(96px, 0.7fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.monthly-header {
+  padding: 0 10px 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+}
+
+.monthly-header span:first-child {
+  color: transparent;
+}
+
+.column-name-input {
+  width: 100%;
+  min-height: 34px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.column-name-input:focus {
+  outline: none;
+  border-color: var(--line);
+  background: #fffdf8;
+  color: var(--ink);
+}
+
+.monthly-row {
+  min-height: 38px;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: var(--row-radius);
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+}
+
+.row-label {
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.money-input,
+.line-name-input,
+.frequency-select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--input-radius);
+  background: #fffdf8;
+  color: var(--ink);
+  text-align: center;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.frequency-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' fill='none' stroke='%235f746f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px 8px;
+}
+
+.money-input:focus,
+.line-name-input:focus,
+.frequency-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+}
+
+.calc-value {
+  font-size: 0.95rem;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.budget-panel-header {
+  display: grid;
+  gap: 14px;
+}
+
+.budget-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.budget-topline {
+  display: grid;
+  grid-template-columns: var(--budget-columns);
+  gap: 12px;
+  font-size: 1rem;
+  color: var(--muted);
+  text-align: center;
+  width: 100%;
+  padding: 0 14px;
+  align-items: end;
+  font-weight: 700;
+}
+
+.budget-sections {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.budget-section {
+  display: grid;
+  gap: 10px;
+  padding: 10px 0 12px;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+}
+
+.section-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+}
+
+.section-title {
+  flex: 1;
+}
+
+.section-title-input {
+  width: 100%;
+  min-height: 34px;
+  padding: 4px 4px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1.12rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.section-title-input:focus {
+  outline: none;
+  border-color: var(--line);
+  background: #fffdf8;
+}
+
+.section-items {
+  display: grid;
+  gap: 10px;
+}
+
+.section-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.line-item-row {
+  display: grid;
+  grid-template-columns: var(--budget-columns);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--row-radius);
+  background: rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(216, 208, 191, 0.55);
+}
+
+.line-name-input {
+  border-color: transparent;
+  background: transparent;
+  padding-left: 2px;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.line-name-input:focus {
+  background: #fffdf8;
+  border-color: var(--line);
+  padding-left: 12px;
+}
+
+.wire-button,
+.plus-button {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #ffffff 0%, #faf6ef 100%);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.wire-button {
+  padding: 10px 16px;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(24, 51, 47, 0.05);
+}
+
+.wire-button:hover,
+.plus-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(15, 118, 110, 0.35);
+  box-shadow: 0 10px 20px rgba(24, 51, 47, 0.08);
+}
+
+.plus-button {
+  width: auto;
+  min-width: 18px;
+  height: auto;
+  padding: 2px 4px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 1.2rem;
+}
+
+.plus-button.remove-button {
+  background: transparent;
+  border: none;
+  color: #5f746f;
+  box-shadow: none;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 0.9;
+}
+
+.plus-button:hover {
+  background: transparent;
+  box-shadow: none;
+  color: var(--accent);
+}
+
+.plus-button.remove-button:hover {
+  background: transparent;
+  color: #4c605c;
+  box-shadow: none;
+}
+
+.benefits-summary {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.benefits-reference {
+  margin-top: 96px;
+  display: grid;
+  gap: 10px;
+}
+
+.benefits-header,
+.benefit-row {
+  display: grid;
+  grid-template-columns: minmax(185px, 1fr) minmax(74px, 0.58fr) minmax(74px, 0.58fr) minmax(74px, 0.58fr);
+  gap: 12px;
+  align-items: center;
+  max-width: none;
+}
+
+.benefits-header {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0 10px 2px;
+}
+
+.benefit-label {
+  font-weight: 700;
+  font-size: 0.98rem;
+  text-align: left;
+}
+
+.benefit-value {
+  text-align: center;
+}
+
+.benefit-row {
+  padding: 8px 10px;
+  border-radius: var(--row-radius);
+  background: rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(216, 208, 191, 0.5);
+}
+
+.expense-totals {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.expense-totals-header,
+.expense-total-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(90px, auto) minmax(90px, auto);
+  gap: 18px;
+  align-items: center;
+}
+
+.expense-totals-header {
+  max-width: 520px;
+  padding: 0 10px 4px;
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.totals-content {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) minmax(260px, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.summary-total-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, auto);
+  gap: 18px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 16px;
+}
+
+.expense-total-row {
+  background: rgba(255, 255, 255, 0.28);
+  max-width: 520px;
+  padding: 8px 10px;
+  border-radius: 16px;
+}
+
+.expense-total-row span:first-child,
+.summary-total-row span:first-child {
+  font-weight: 700;
+}
+
+.expense-total-row span:nth-child(2),
+.expense-total-row span:last-child,
+.summary-total-row span:last-child {
+  text-align: center;
+}
+
+.monthly-summary {
+  display: grid;
+  gap: 26px;
+  align-content: start;
+  padding-top: 68px;
+}
+
+.summary-total-row {
+  min-height: 96px;
+  padding: 18px 24px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  justify-items: start;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(216, 208, 191, 0.5);
+}
+
+.summary-total-row span:first-child {
+  font-size: 1.18rem;
+}
+
+.summary-total-row span:last-child {
+  font-size: 1.35rem;
+  text-align: left;
+}
+
+.totals-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.status-message {
+  min-height: 20px;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.status-message.error {
+  color: #8a2c2c;
+}
+
+.positive {
+  color: #1d5c2a;
+}
+
+.negative {
+  color: #9b2020;
+}
+
+@media (max-width: 980px) {
+  .page {
+    width: calc(100vw - 24px);
+    margin: 12px auto;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "inputs"
+      "annual"
+      "budget"
+      "expenses";
+    padding-top: 10px;
+  }
+
+  .budget-title-row,
+  .totals-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .budget-topline {
+    display: none;
+  }
+
+  .monthly-header,
+  .monthly-row,
+  .benefits-header,
+  .benefit-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .benefits-reference {
+    margin-top: 28px;
+  }
+
+  .section-heading-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .benefits-header span:first-child,
+  .benefit-row .benefit-label {
+    grid-column: 1 / -1;
+  }
+
+  .line-item-row {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
+  .expense-total-row,
+  .summary-total-row {
+    max-width: none;
+  }
+
+  .totals-content {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .monthly-summary {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: calc(100vw - 18px);
+    gap: 8px;
+  }
+
+  .panel {
+    padding: 10px 16px 18px;
+  }
+
+  .monthly-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .monthly-header {
+    display: none;
+  }
+
+  .budget-section {
+    padding: 14px 12px;
+  }
+}
