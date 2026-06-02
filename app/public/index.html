@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget Calculator</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel inputs-panel">
+        <h1>Inputs - Biweekly</h1>
+        <div class="monthly-grid" id="monthlyInputsGrid"></div>
+      </section>
+
+      <section class="panel benefits-panel">
+        <h2>Annual Totals</h2>
+        <div class="benefits-header">
+          <span></span>
+          <span>User 1</span>
+          <span>User 2</span>
+          <span>Total</span>
+        </div>
+        <div class="benefits-summary" id="benefitsSummaryMain"></div>
+        <div class="benefits-reference" id="benefitsSummaryReference"></div>
+      </section>
+
+      <section class="panel budget-panel">
+        <div class="budget-panel-header">
+          <div class="budget-title-row">
+            <h2>Budget Calculator</h2>
+            <button id="addSectionButton" class="wire-button" type="button">Add Another Section</button>
+          </div>
+          <div class="budget-topline">
+            <span></span>
+            <span>Amount</span>
+            <span>Frequency</span>
+            <span>Monthly</span>
+            <span>Annual</span>
+            <span></span>
+          </div>
+        </div>
+        <div id="budgetSections" class="budget-sections"></div>
+      </section>
+
+      <section class="panel totals-panel">
+        <div class="totals-header-row">
+          <h2>Total Expenses</h2>
+          <div class="header-actions">
+            <button id="importCsvButton" class="wire-button" type="button">Import CSV</button>
+            <button id="exportCsvButton" class="wire-button" type="button">Export CSV</button>
+            <button id="resetButton" class="wire-button" type="button">Reset</button>
+          </div>
+        </div>
+        <div class="totals-content">
+          <div id="expenseTotals" class="expense-totals"></div>
+          <div id="monthlySummary" class="monthly-summary"></div>
+        </div>
+        <p id="statusMessage" class="status-message" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <input id="csvFileInput" type="file" accept=".csv,text/csv" hidden />
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
